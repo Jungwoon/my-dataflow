@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="first-dataflow" />
+        <module name="my-dataflow" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="first-dataflow" target="1.7" />
+      <module name="my-dataflow" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

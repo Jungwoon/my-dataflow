@@ -8,9 +8,6 @@ import java.util.List;
 
 import com.byjw.nl.NLAnalyze;
 import com.byjw.nl.NLAnalyzeVO;
-import com.google.api.services.bigquery.model.JsonObject;
-import com.google.gson.stream.JsonReader;
-import org.apache.avro.data.Json;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -36,22 +33,9 @@ import com.google.cloud.dataflow.sdk.values.KV;
 
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
-/**
- * A starter example for writing Google Cloud Dataflow programs.
- *
- * <p>The example takes two strings, converts them to their upper-case
- * representation and logs them.
- *
- * <p>To run this starter example locally using DirectPipelineRunner, just
- * execute it without any additional parameters from your favorite development
- * environment.
- *
- * <p>To run this starter example using managed resource in Google Cloud
- * Platform, you should specify the following command-line options:
- *   --project=<YOUR_PROJECT_ID>
- *   --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE>
- *   --runner=BlockingDataflowPipelineRunner
- */
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 public class TwitterPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(TwitterPipeline.class);
@@ -123,24 +107,25 @@ public class TwitterPipeline {
         private static final long serialVersionUID = 3644510088969272245L;
 
         @Override
-        public void processElement(ProcessContext c){
-            String text = null;
-            String lang = null;
+        public void processElement(ProcessContext processContext){
+            String text;
+            String lang;
 
             try {
-                JsonReader jsonReader = Json.createReader(new StringReader(c.element()));
+                JsonReader jsonReader = Json.createReader(new StringReader(processContext.element()));
                 JsonObject readObject = jsonReader.readObject();
-                text = (String) readObject.getString("text");
-                lang = (String) readObject.getString("lang");
 
-                if(lang.equals("en")) {
-                    c.output(text.toLowerCase());
+                text = readObject.getString("text");
+                lang = readObject.getString("lang");
+
+                if (lang.equals("en")) {
+                    processContext.output(text.toLowerCase());
                 }
 
             }
             catch (Exception e) {
                 LOG.debug("No text element");
-                LOG.debug("original message is :" + c.element());
+                LOG.debug("original message is :" + processContext.element());
             }
         }
     }
@@ -158,8 +143,8 @@ public class TwitterPipeline {
         public void processElement(ProcessContext processContext) throws IOException, GeneralSecurityException{
             String text = processContext.element();
 
-            NLAnalyze nl = NLAnalyze.getInstance();
-            NLAnalyzeVO vo = nl.analyze(text);
+            NLAnalyze nlAnalyze = NLAnalyze.getInstance();
+            NLAnalyzeVO vo = nlAnalyze.analyze(text);
 
             List<String> nouns = vo.getNouns();
             List<String> adjs = vo.getAdjs();
@@ -214,8 +199,7 @@ public class TwitterPipeline {
     }
 
     static class AddTimeStampAdj extends DoFn<KV<String,Long>,TableRow>
-            implements com.google.cloud.dataflow.sdk.transforms.DoFn.RequiresWindowAccess
-    {
+            implements com.google.cloud.dataflow.sdk.transforms.DoFn.RequiresWindowAccess {
         @Override
         public void processElement(ProcessContext c) {
             String key = c.element().getKey();	// get Word
@@ -235,7 +219,7 @@ public class TwitterPipeline {
         }
 
     }
-    static class AdjFilter extends DoFn<KV<String,Iterable<String>>,String>{
+    static class AdjFilter extends DoFn<KV<String,Iterable<String>>,String> {
         @Override
         public void processElement(ProcessContext c) {
             String key = c.element().getKey();
@@ -247,13 +231,12 @@ public class TwitterPipeline {
         }
     }
 
-    static class Echo extends DoFn<KV<String,Iterable<String>>,Void>{
+    static class Echo extends DoFn<KV<String,Iterable<String>>,Void> {
         @Override
         public void processElement(ProcessContext c) {
             String key = c.element().getKey();
             List<String> values = (List<String>) c.element().getValue();
-            for(String value:values){
-            }
+            for (String value:values){ }
         }
 
     }
