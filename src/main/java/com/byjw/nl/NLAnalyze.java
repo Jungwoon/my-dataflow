@@ -32,7 +32,7 @@ public class NLAnalyze {
         List<Token> tokens = analyzeSyntax(text);
         NLAnalyzeVO nlAnalyzeVO = new NLAnalyzeVO();
 
-        for (Token token:tokens){
+        for (Token token:tokens) {
             String tag = token.getPartOfSpeech().getTag();
             String word = token.getText().getContent();
 
@@ -64,7 +64,7 @@ public class NLAnalyze {
     }
 
 
-    private List<Token> analyzeSyntax(String text) throws IOException{
+    private List<Token> analyzeSyntax(String text) throws IOException {
         AnnotateTextRequest request =
                 new AnnotateTextRequest()
                         .setDocument(new Document().setContent(text).setType("PLAIN_TEXT"))
@@ -85,8 +85,8 @@ public class NLAnalyze {
                 new AnalyzeSentimentRequest().setDocument(new Document().setContent(text).setType("PLAIN_TEXT"));
 
         CloudNaturalLanguageAPI.Documents.AnalyzeSentiment analyze = languageApi.documents().analyzeSentiment(request);
-
         AnalyzeSentimentResponse response = analyze.execute();
+
         return response.getDocumentSentiment();
     }
 

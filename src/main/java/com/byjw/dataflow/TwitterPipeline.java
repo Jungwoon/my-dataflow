@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.byjw.nl.NLAnalyze;
 import com.byjw.nl.NLAnalyzeVO;
+import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
+import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -30,7 +32,6 @@ import com.google.cloud.dataflow.sdk.transforms.windowing.FixedWindows;
 import com.google.cloud.dataflow.sdk.transforms.windowing.IntervalWindow;
 import com.google.cloud.dataflow.sdk.transforms.windowing.Window;
 import com.google.cloud.dataflow.sdk.values.KV;
-
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import javax.json.Json;
@@ -39,14 +40,28 @@ import javax.json.JsonReader;
 
 public class TwitterPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(TwitterPipeline.class);
-    private static final String NOWN_TABLE= "beer-coding:twitter.noun";
-    private static final String ADJ_TABLE= "beer-coding:twitter.adj";
+    private static final String PROJECT = "beer-coding";
+    private static final String NOWN_TABLE = "beer-coding:twitter.noun";
+    private static final String ADJ_TABLE = "beer-coding:twitter.adj";
     private static final String TOPIC = "projects/beer-coding/topics/twitter";
+    private static final String BUCKET = "gs://dataflow-byjw";
+
 
 
     public static void main(String[] args) {
-        Pipeline pipeline = Pipeline.create(PipelineOptionsFactory.fromArgs(args).withValidation().create());
 
+        DataflowPipelineOptions options = PipelineOptionsFactory.create().as(DataflowPipelineOptions.class);
+        options.setRunner(BlockingDataflowPipelineRunner.class);
+        options.setProject(PROJECT);
+        options.setStagingLocation(BUCKET);
+
+        Pipeline pipeline = Pipeline.create(options);
+
+        // Origin
+//        Pipeline pipeline = Pipeline.create(PipelineOptionsFactory.fromArgs(args).withValidation().create());
+
+
+        // pipeline.apply를 통해서 변형된 데이터를 PCollection에 담음)
         PCollection <KV<String,Iterable<String>>> nlProcessed =
                 pipeline.apply(PubsubIO.Read.named("ReadFromPubSub").topic(TOPIC))
                         .apply(ParDo.named("Parse Twitter").of(new ParseTwitterFeedDoFn()))
@@ -135,22 +150,22 @@ public class TwitterPipeline {
     // - list of adj
     // - list of emoticon
 
-    static class NLAnalyticsDoFn extends DoFn<String,KV<String,Iterable<String>>> {
+    static class NLAnalyticsDoFn extends DoFn< String, KV<String, Iterable<String>> > {
         private static final long serialVersionUID = 3013780586389810713L;
 
         // return list of NOUN,ADJ,Emoticon
         @Override
-        public void processElement(ProcessContext processContext) throws IOException, GeneralSecurityException{
+        public void processElement(ProcessContext processContext) throws IOException, GeneralSecurityException {
             String text = processContext.element();
 
             NLAnalyze nlAnalyze = NLAnalyze.getInstance();
-            NLAnalyzeVO vo = nlAnalyze.analyze(text);
+            NLAnalyzeVO nlAnalyzeVO = nlAnalyze.analyze(text);
 
-            List<String> nouns = vo.getNouns();
-            List<String> adjs = vo.getAdjs();
+            List<String> nouns = nlAnalyzeVO.getNouns();
+            List<String> adjs = nlAnalyzeVO.getAdjs();
 
-            KV<String,Iterable<String>> kv_noun=  KV.of("NOUN", (Iterable<String>)nouns);
-            KV<String,Iterable<String>> kv_adj =  KV.of("ADJ", (Iterable<String>)adjs);
+            KV < String, Iterable<String> > kv_noun=  KV.of("NOUN", (Iterable<String>)nouns);
+            KV < String, Iterable<String> > kv_adj =  KV.of("ADJ", (Iterable<String>)adjs);
 
             processContext.output(kv_noun);
             processContext.output(kv_adj);
@@ -159,7 +174,7 @@ public class TwitterPipeline {
     }
 
 
-    static class NounFilter extends DoFn<KV<String,Iterable<String>>,String>{
+    static class NounFilter extends DoFn<KV<String,Iterable<String>>, String>{
         @Override
         public void processElement(ProcessContext processContext) {
             String key = processContext.element().getKey();
