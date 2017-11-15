@@ -1,16 +1,13 @@
-package com.byjw.dataflow;
+package com.byjw.DataFlow;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.byjw.nl.NLAnalyze;
-import com.byjw.nl.NLAnalyzeVO;
-import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner;
+import com.byjw.NL.NLAnalyze;
+import com.byjw.NL.NLAnalyzeV2;
+import com.byjw.NL.NLAnalyzeVO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -42,7 +39,7 @@ public class TwitterPipeline {
     private static final String NOUN_TABLE = "beer-coding:twitter.noun";
     private static final String ADJ_TABLE = "beer-coding:twitter.adj";
     private static final String TOPIC = "projects/beer-coding/topics/twitter";
-    private static final String BUCKET = "gs://dataflow-byjw";
+    private static final String BUCKET = "gs://DataFlow-byjw";
 
 
 
@@ -54,6 +51,7 @@ public class TwitterPipeline {
 //        options.setProject(PROJECT);
 //        options.setStagingLocation(BUCKET);
 //        options.setStreaming(true);
+//
 //        Pipeline pipeline = Pipeline.create(options);
 
         Pipeline pipeline = Pipeline.create(PipelineOptionsFactory.fromArgs(args).withValidation().create());
@@ -125,9 +123,11 @@ public class TwitterPipeline {
                 text = jsonObject.getString("text");
                 lang = jsonObject.getString("lang");
 
-                if (lang.equals("en")) {
-                    processContext.output(text.toLowerCase());
-                }
+//                if (lang.equals("en")) {
+//                    processContext.output(text.toLowerCase());
+//                }
+
+                processContext.output(text);
 
             }
             catch (Exception e) {

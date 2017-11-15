@@ -70,7 +70,7 @@ import java.util.regex.Pattern;
  *   --project=YOUR_PROJECT_ID
  *   --stagingLocation=gs://YOUR_STAGING_DIRECTORY
  *   --runner=BlockingDataflowPipelineRunner
- *   --workerLogLevelOverrides={"com.google.cloud.dataflow.examples":"DEBUG"}
+ *   --workerLogLevelOverrides={"com.google.cloud.DataFlow.examples":"DEBUG"}
  * }
  * </pre>
  *
@@ -79,7 +79,7 @@ import java.util.regex.Pattern;
  * <pre>
  * mvn compile exec:java ... \
  *   -Dexec.args="... \
- *     --workerLogLevelOverrides={\\\"com.google.cloud.dataflow.examples\\\":\\\"DEBUG\\\"}"
+ *     --workerLogLevelOverrides={\\\"com.google.cloud.DataFlow.examples\\\":\\\"DEBUG\\\"}"
  * </pre>
  *
  * <p>Concept #2: Dataflow workers which execute user code are configured to log to Cloud
@@ -90,10 +90,10 @@ import java.util.regex.Pattern;
  * </code></pre>
  * For example, by specifying:
  * <pre><code>
- *   --workerLogLevelOverrides={"com.google.cloud.dataflow.examples":"DEBUG"}
+ *   --workerLogLevelOverrides={"com.google.cloud.DataFlow.examples":"DEBUG"}
  * </code></pre>
  * when executing this pipeline using the Dataflow service, Cloud Logging would contain only
- * "DEBUG" or higher level logs for the {@code com.google.cloud.dataflow.examples} package in
+ * "DEBUG" or higher level logs for the {@code com.google.cloud.DataFlow.examples} package in
  * addition to the default "INFO" or higher level logs. In addition, the default Dataflow worker
  * logging configuration can be overridden by specifying
  * {@code --defaultWorkerLogLevel=<one of TRACE, DEBUG, INFO, WARN, ERROR>}. For example,
@@ -102,7 +102,7 @@ import java.util.regex.Pattern;
  * that changing the default worker log level to TRACE or DEBUG will significantly increase
  * the amount of logs output.
  *
- * <p>The input file defaults to {@code gs://dataflow-samples/shakespeare/kinglear.txt} and can be
+ * <p>The input file defaults to {@code gs://DataFlow-samples/shakespeare/kinglear.txt} and can be
  * overridden with {@code --inputFile}.
  */
 public class DebuggingWordCount {

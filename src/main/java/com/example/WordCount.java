@@ -84,7 +84,7 @@ import com.google.cloud.dataflow.sdk.values.PCollection;
  *   --output=gs://YOUR_OUTPUT_PREFIX
  * }</pre>
  *
- * <p>The input file defaults to {@code gs://dataflow-samples/shakespeare/kinglear.txt} and can be
+ * <p>The input file defaults to {@code gs://DataFlow-samples/shakespeare/kinglear.txt} and can be
  * overridden with {@code --inputFile}.
  */
 public class WordCount {
@@ -160,7 +160,7 @@ public class WordCount {
    */
   public interface WordCountOptions extends PipelineOptions {
     @Description("Path of the file to read from")
-    @Default.String("gs://dataflow-samples/shakespeare/kinglear.txt")
+    @Default.String("gs://DataFlow-samples/shakespeare/kinglear.txt")
     String getInputFile();
     void setInputFile(String value);
 

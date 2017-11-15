@@ -1,9 +1,11 @@
 package com.example;
 
 
-import com.byjw.nl.NLAnalyze;
-import com.byjw.nl.NLAnalyzeVO;
+import com.byjw.NL.NLAnalyze;
+import com.byjw.NL.NLAnalyzeV2;
+import com.byjw.NL.NLAnalyzeVO;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,8 +17,9 @@ import static org.junit.Assert.fail;
 
 public class NLAnalyzeTest {
 
+    @Ignore
     @Test
-    public void nl_test() {
+    public void dataflow_nl_test() {
 
         try {
             NLAnalyze instance = NLAnalyze.getInstance();
@@ -51,6 +54,7 @@ public class NLAnalyzeTest {
         }
     }
 
+    @Ignore
     @Test
     public void parse_json() {
 
@@ -68,6 +72,19 @@ public class NLAnalyzeTest {
             e.printStackTrace();
             fail("No text element");
             fail("original message is :");
+        }
+    }
+
+    @Test
+    public void nl_test() {
+
+        String text = "inspects the given text for known entities (proper nouns and common nouns), returns information about those entities, and identifies the prevailing emotional opinion of the entity within the text, especially to determine a writer's attitude toward the entity as positive, negative, or neutral. Entity analysis is performed with the analyzeEntitySentiment method.";
+
+        try {
+            NLAnalyzeV2.getInstance().analyze(text);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
