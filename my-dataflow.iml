@@ -117,7 +117,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Maven: javax.json:javax.json-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.apis:google-api-services-language:v1beta1-rev7-1.22.0" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20160810" level="project" />
   </component>
 </module>

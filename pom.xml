@@ -220,12 +220,6 @@
       <version>5.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-
 
     <!-- NL API dependency -->
     <dependency>
@@ -238,6 +232,12 @@
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
       <version>1.22.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20160810</version>
     </dependency>
 
   </dependencies>
